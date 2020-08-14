@@ -1,17 +1,24 @@
 FROM debian:buster-backports
 
-RUN /bin/sh -c "echo \"export PS1='[debian buster-backports \w] # '\" >> /root/.bashrc"
+RUN /bin/sh -c "echo \"export PS1='[\e[92mdebian\e[0m \w] # '\" >> /root/.bashrc"
 
 RUN set -xueo
-RUN apt-get update \
-&& apt-get install -y apt-transport-https curl wget apt-utils gnupg2 vim nano
+RUN apt-get update && apt-get install -y \
+apt-transport-https \
+curl wget apt-utils \
+gnupg2 \
+vim \
+nano \
+tmux \
+bash-completion \
+less \
+dnsutils \
+netcat
 
 WORKDIR /root
 
-RUN \
-curl -kLo kubectl \
-https://storage.googleapis.com/kubernetes-release/release/\
-$(curl -ks https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+COPY tools/kubectl /usr/local/bin/
+COPY tools/helm /usr/local/bin/
+COPY tools/.tmux.conf /root/.tmux.conf
 
-RUN chmod +x kubectl \
-&& ln -s /root/kubectl /usr/local/bin/kubectl
+RUN kubectl completion bash >> /root/.profile

@@ -1,5 +1,8 @@
 FROM centos:8
 
-RUN echo "export PS1='[\e[92mucentos8\e[0m \w] # '" >> /root/.bashrc
+RUN echo -e "export PS1='[\e[92mcentos8\e[0m \w] # '\nexport USER=$(whoami)" >> /root/.bashrc
 RUN echo "set -uo pipefail" >> /root/.bashrc
 
+RUN yum update -y
+
+WORKDIR /root
