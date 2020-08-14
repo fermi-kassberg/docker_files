@@ -18,3 +18,10 @@ $ docker build . -t debian:v2 -f debian-v2
 
 $ docker run -d -it --mount type=bind,source=C:\\Users\\FANJEL\\docker-volumn,target=/root/projects debian:v2 bash
 ```
+
+### start a ubuntu container v1
+```
+$ docker build . -t ubuntu:v1 -f ubuntu-v1
+
+$ docker run -d -it --mount type=bind,source=C:\\Users\\FANJEL\\docker-volumn,target=/root/projects ubuntu:v1 bash
+```
