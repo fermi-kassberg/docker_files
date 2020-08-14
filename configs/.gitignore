@@ -1,0 +1,6 @@
+[core]
+        editor = /bin/nano
+        longpaths = true
+[user]
+        name = jfa
+        email = jielei.fan@autinity.de

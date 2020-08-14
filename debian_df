@@ -1,0 +1,32 @@
+FROM debian:buster-backports AS build
+
+RUN set -ex
+RUN apt-get update && apt-get install -y \
+    apt-transport-https \
+    curl \
+    wget \
+    apt-utils \
+    gnupg2 \
+    vim \
+    nano \
+    tmux \
+    bash-completion \
+    less \
+    dnsutils \
+    netcat \
+    ca-certificates \
+    htop \
+    procps \
+    git
+
+
+COPY configs/kubectl /usr/local/bin/
+COPY configs/helm /usr/local/bin/
+COPY configs/.* /root/
+
+RUN kubectl completion bash >> /root/.bash_completion
+
+# This results in a single layer image
+FROM scratch
+COPY --from=build / /
+WORKDIR /root

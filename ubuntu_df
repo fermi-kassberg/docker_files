@@ -4,8 +4,7 @@ RUN echo "export PS1='[\e[92mubuntu\e[0m \w] # '" >> /root/.bashrc
 RUN echo "set -uo pipefail" >> /root/.bashrc
 
 RUN set -xeu
-RUN apt-get update \
-&& apt-get install -y \
+RUN apt-get update && apt-get install -y \
 apt-transport-https \
 curl \
 wget \
