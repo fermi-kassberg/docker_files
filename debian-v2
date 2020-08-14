@@ -1,0 +1,14 @@
+FROM debian:buster-backports
+
+RUN /bin/sh -c "echo \"export PS1='[debian buster-backports \w] # '\" >> /root/.bashrc"
+
+RUN set -xeuo pipefail && \
+apt-get update && \
+apt-get install -y apt-transport-https curl wget apt-utils gnupg2
+
+WORKDIR /root
+
+RUN curl -kLo kubectl https://storage.googleapis.com/kubernetes-release/release/\
+$(curl -ks https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+RUN chmod +x kubectl && \
+ln -s /root/kubectl /usr/local/bin/kubectl
