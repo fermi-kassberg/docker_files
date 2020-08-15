@@ -1,7 +1,8 @@
 FROM docker.io/centos:8 AS build
 
 RUN set -ex
-RUN dnf update -y && dnf install -y \
+RUN dnf -y update && \
+    dnf install -y \
     wget \
     vim \
     nano \
@@ -9,7 +10,9 @@ RUN dnf update -y && dnf install -y \
     bash-completion \
     bind-utils \
     nc \
-    git
+    sudo \
+    git && \
+    rm -rf /var/cache/dnf
 
 COPY configs/kubectl /usr/local/bin/
 COPY configs/helm /usr/local/bin/
@@ -19,7 +22,6 @@ RUN kubectl completion bash >> /root/.bash_completion
 RUN echo "if [ -f /etc/bashrc ]; then . /etc/bashrc; fi" >> /root.bashrc
 RUN echo "export PS1='[\e[92mcentos\e[0m \w] # '" >> /root/.bashrc
 
-WORKDIR /root
 
 # This results in a single layer image
 FROM scratch
