@@ -11,3 +11,10 @@ docker build . -t debian:dev -f debian_df
 
 docker run -d -it -v C:\\Users\\FANJEL\\docker-volumn:/root/docker-volumn debian:dev bash
 ```
+
+### start a centos8 container
+```
+docker build . -t centos8:dev -f centos_df
+
+docker run -d -it -v C:\\Users\\FANJEL\\docker-volumn:/root/docker-volumn debian:dev bash
+```

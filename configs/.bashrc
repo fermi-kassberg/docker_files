@@ -45,4 +45,3 @@ if [ -f ~/.bash_completion ]; then
   . ~/.bash_completion
 fi
 set -o pipefail
-export PS1='[\e[92mdebian\e[0m \w] # '
