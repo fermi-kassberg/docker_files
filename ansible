@@ -1,2 +1,2 @@
 FROM ansible/ansible-runner:devel
-RUN echo "export PS1='[\e[92mcentos\e[0m \w] # '" >> /runner/.bashrc
+RUN echo "export PS1='[\e[92mansible\e[0m \w] # '" >> /home/runner/.bashrc

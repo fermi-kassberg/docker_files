@@ -46,7 +46,7 @@ docker:
   stage: Docker
   services:
     - docker:dind
-  image: docker:git
+  image: docker:gity  
   cache: {}
   before_script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
