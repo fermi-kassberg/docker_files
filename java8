@@ -1,0 +1,27 @@
+FROM mcr.microsoft.com/java/maven:8-zulu-debian10 AS build
+
+RUN set -ex
+RUN apt-get update && apt-get install -y \
+    apt-transport-https \
+    curl \
+    wget \
+    apt-utils \
+    gnupg2 \
+    vim \
+    nano \
+    tmux \
+    bash-completion \
+    less \
+    dnsutils \
+    netcat \
+    ca-certificates \
+    htop \
+    procps \
+    git
+
+RUN echo "export PS1='[\e[92mjava8\e[0m \w] # '" >> /root/.bashrc
+
+# This results in a single layer image
+FROM scratch
+COPY --from=build / /
+WORKDIR /root
