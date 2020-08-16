@@ -1,2 +1,3 @@
+# from centos8
 FROM ansible/ansible-runner:devel
 RUN echo "export PS1='[\e[92mansible \D{%m-%d} \e[0m\w] # '" >> /home/runner/.bashrc

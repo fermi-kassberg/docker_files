@@ -1,5 +1,4 @@
-# Here is the build image
-FROM python:3.8-slim-buster as build
+FROM golang:1.15-buster as build
 
 RUN apt-get update && apt-get install -y \
     gcc \
@@ -22,21 +21,8 @@ RUN apt-get update && apt-get install -y \
     strace \
 &&  apt-get clean
 
-RUN pip install \
-    flake8 \
-    pytest \
-    pytest-cov \
-    pylint \
-    pylint-exit \
-    anybadge
-
-COPY configs/kubectl /usr/local/bin/
-COPY configs/helm /usr/local/bin/
-COPY configs/docker /usr/local/bin/
 COPY configs/.* /root/
-
-RUN kubectl completion bash >> /root/.bash_completion
-RUN echo "export PS1='[\e[92mpython \D{%m-%d} \e[0m\w] # '" >> /root/.bashrc
+RUN echo "export PS1='[\e[92mgo \D{%m-%d} \e[0m\w] # '" >> /root/.bashrc
 
 # This results in a single layer image
 FROM scratch
