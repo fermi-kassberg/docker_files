@@ -36,3 +36,7 @@ docker run --rm -it --link df-docker python:dev bash ?
 ```
 docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock python:dev bash
 ```
+#### make powershell dumb
+```
+Set-PSReadlineOption -BellStyle None
+```
