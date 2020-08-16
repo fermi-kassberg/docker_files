@@ -1,0 +1,20 @@
+stages:
+  - build
+
+home-frontend:
+  stage: build
+  trigger:
+    include: home-frontend/.gitlab-ci.yml
+    strategy: depend
+  only:
+    changes:
+      - home-frontend/*
+
+home-backend:
+  stage: build
+  trigger:
+    include: home-backend/.gitlab-ci.yml
+    strategy: depend
+  only:
+    changes:
+      - home-backend/*

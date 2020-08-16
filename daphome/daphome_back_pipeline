@@ -1,0 +1,80 @@
+stages:
+  - Static Analysis
+  - Docker
+  - API Testing
+
+image: python:3.8
+
+variables:
+    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+cache:
+  paths:
+    - .cache/pip
+    - venv/
+
+before_script:
+  - cd home-backend
+  - python -V
+  - pip install virtualenv
+  - virtualenv venv
+  - source venv/bin/activate
+  - pip install -r requirements.txt
+  - pip install flake8 pytest pytest-cov pylint anybadge pylint-exit
+
+flake8:
+  stage: Static Analysis
+  script:
+    - flake8 DAPHome/* --max-line-length=120
+
+pylint:
+  stage: Static Analysis
+  allow_failure: true
+  script:
+    - mkdir ./pylint
+    - pylint --output-format=text ./DAPHome | tee ./pylint/pylint.log || pylint-exit $?
+    - PYLINT_SCORE=$(sed -n 's/^Your code has been rated at \([-0-9.]*\)\/.*/\1/p' ./pylint/pylint.log)
+    - anybadge --label=Pylint --file=pylint/pylint.svg --value=$PYLINT_SCORE 2=red 4=orange 8=yellow 10=green
+    - echo "Pylint score is $PYLINT_SCORE"
+  artifacts:
+    paths:
+      - home-backend/pylint/
+
+docker:
+  tags:
+    - docker
+  stage: Docker
+  services:
+    - docker:dind
+  image: docker:git
+  cache: {}
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+    - cd home-backend
+  script:    
+    - docker build --pull -t "$CI_REGISTRY_IMAGE/home-backend" -t "$CI_REGISTRY_IMAGE/home-backend/$CI_COMMIT_REF_SLUG" -t "$CI_REGISTRY_IMAGE/home-backend/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHORT_SHA" .
+    - docker push "$CI_REGISTRY_IMAGE/home-backend:latest"
+    - docker push "$CI_REGISTRY_IMAGE/home-backend/$CI_COMMIT_REF_SLUG:latest"
+    - docker push "$CI_REGISTRY_IMAGE/home-backend/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHORT_SHA"
+  interruptible: true
+
+api-tests:
+  stage: API Testing
+  services:
+    - name: "$CI_REGISTRY_IMAGE/home-backend/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHORT_SHA"
+      alias: home-backend
+  image: docker-registry.autinity.de/qs/pytest_image:latest
+  variables:
+    API_URL: "http://home-backend:5000"
+    DAPHOME_BACKEND_DATA_PATH: "."
+    DEBUG: "True"
+  before_script:
+    - cd home-backend/rt
+    - pip install pytest-depends
+  script:
+    - pytest --tb=short -v --html=report.html --self-contained-html
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - home-backend/rt/report.html
+  interruptible: true

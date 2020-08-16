@@ -1,0 +1,65 @@
+stages:
+  - build
+  - analysis
+  - docker
+
+.node-template: &node-template
+  image: node:lts
+  before_script:
+    - cd home-frontend
+    - node --version
+    - yarn --version
+    - yarn config set registry https://npm.autinity.de/
+    - yarn install
+    - export PATH="./node_modules/.bin:$PATH"
+
+.node-cache-template: &node-cache-template
+  key: node_modules-${CI_COMMIT_REF_SLUG}
+  paths:
+    - home-frontend/node_modules/
+  policy: pull
+
+ng-build:
+  <<: *node-template
+  stage: build
+  script:
+    - ng --version
+    - ng build --prod
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - home-frontend/dist/
+      - home-frontend/yarn.lock
+  cache:
+    <<: *node-cache-template
+    policy: push
+  interruptible: true
+
+ng-lint:
+  <<: *node-template
+  stage: analysis
+  needs:
+    - ng-build
+  script:
+    - ng lint --format=stylish
+  cache:
+    <<: *node-cache-template
+  interruptible: true
+  allow_failure: true
+
+docker:
+  stage: docker
+  services:
+    - docker:dind
+  image: docker:git
+  cache: {}
+  dependencies:
+    - ng-build
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+    - cd home-frontend
+  script:    
+    - docker build --pull -t "$CI_REGISTRY_IMAGE/home-frontend" -t "$CI_REGISTRY_IMAGE/home-frontend:$CI_COMMIT_REF_SLUG" .
+    - docker push "$CI_REGISTRY_IMAGE/home-frontend"
+    - docker push "$CI_REGISTRY_IMAGE/home-frontend:$CI_COMMIT_REF_SLUG"
+  interruptible: true
