@@ -36,7 +36,7 @@ COPY configs/docker /usr/local/bin/
 COPY configs/.* /root/
 
 RUN kubectl completion bash >> /root/.bash_completion
-RUN echo "export PS1='[\e[92mpython \D{%m-%d} \e[0m\w] # '" >> /root/.bashrc
+RUN echo "export PS1='[\e[92mpython \D{%m-%d} \e[0m\w]\n# '" >> /root/.bashrc
 
 # This results in a single layer image
 FROM scratch
