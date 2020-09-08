@@ -1,0 +1,3 @@
+FROM teracy/angular-cli:latest
+RUN echo "export PS1='[\e[92mangular \D{%m-%d} \e[0m\w]\n# '" >> /root/.bashrc
+WORKDIR /root

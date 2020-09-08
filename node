@@ -1,0 +1,3 @@
+FROM node:lts
+RUN echo "export PS1='[\e[92mnode \D{%m-%d} \e[0m\w]\n# '" >> /root/.bashrc
+WORKDIR /root
