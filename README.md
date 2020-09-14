@@ -40,3 +40,23 @@ docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock python:dev bash
 ```
 Set-PSReadlineOption -BellStyle None
 ```
+
+####
+```
+mysql> select Host,User,Plugin from mysql.user;
+
+CREATE USER 'native'@'%' IDENTIFIED WITH mysql_native_password BY 'fanjielei';
+
+CREATE DATABASE DEMO CHARACTER SET utf8 COLLATE utf8_general_ci;
+GRANT ALL ON `DEMO`.* TO 'native'@'%' WITH GRANT OPTION;
+
+
+docker run -it --rm -d -p 3306:3306 -v C:\Users\FANJEL\mysql:/var/lib/mysql -v C:\Users\FANJEL\dockerfiles\configs\mysql:/etc/mysql -e MYSQL_ROOT_PASSWORD=fanjielei mysql:8.0 --default-authentication-plugin=mysql_native_password
+
+# without conf.d
+docker run -it --rm -d -p 3306:3306 -v C:\Users\FANJEL\mysql:/var/lib/mysql  -e MYSQL_ROOT_PASSWORD=fanjielei mysql:8.0 --default-authentication-plugin=mysql_native_password  --innodb_use_native_aio=0
+
+# without /var/lib/mysql
+docker run -it --rm -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=fanjielei mysql:8.0 --default-authentication-plugin=mysql_native_password
+
+```
