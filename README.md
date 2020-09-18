@@ -84,3 +84,6 @@ FROM mysql:latest
 COPY --from=builder /initialized-db /var/lib/mysql
 
 ```
+```
+https://github.com/iamdvr/prepopulated-mysql-container-example
+```
