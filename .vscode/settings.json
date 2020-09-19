@@ -1,2 +1,5 @@
 {
+    "workbench.colorTheme": "DesertEx",
+    "editor.mouseWheelZoom": true,
+    "terminal.integrated.fontSize": 15,
 }
